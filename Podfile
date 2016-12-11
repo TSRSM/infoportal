@@ -8,4 +8,5 @@ target 'InfoPortal' do
   # Pods for InfoPortal
   pod 'Alamofire', '~> 4.0'
   pod 'SwiftyJSON'
+  pod 'KeychainAccess'
 end

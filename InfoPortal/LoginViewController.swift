@@ -20,6 +20,7 @@ class LoginViewController: UIViewController {
 	@IBOutlet weak var buttonStackView: UIStackView!
 	@IBOutlet var textFields: [UITextField]!
 	
+	let helper = InfoPortalHelper.shared
 	let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .white)
 	
 	var loggingIn = false
@@ -37,7 +38,23 @@ class LoginViewController: UIViewController {
 	@IBAction func submitTapped() {
 		guard canSubmit else { return }
 		beginLogin()
-		// TODO: Implement logging in
+		
+		let error: ErrorHandler = { error in
+			self.endLogin()
+			self.present(error: error)
+		}
+		
+		let success: SuccessHandler = { json in
+			self.endLogin()
+			self.present(title: "Success!", message: json.description)
+		}
+		
+		helper.login(username: usernameTextField.text!, password: passwordTextField.text!, error: error, success: success)
+//		helper.logout(error: error, success: success)
+//		helper.updates(filter: ["0000"], error: error, success: success)
+//		helper.post(content: "Hello world!", title: "Hi", type: "0000", audience: [9], error: error, success: success)
+//		helper.profile(error: error, success: success)
+//		helper.identifiers(error: error, success: success)
 	}
 	
 	// MARK: - View controller lifecycle
@@ -53,6 +70,10 @@ class LoginViewController: UIViewController {
 		activityIndicator.startAnimating()
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: .UIKeyboardWillShow, object: nil)
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: .UIKeyboardWillHide, object: nil)
+		
+		if let session = helper.session {
+			print("session: \(session)")
+		}
 	}
 	
 	override func viewDidAppear(_ animated: Bool) {
@@ -105,7 +126,10 @@ class LoginViewController: UIViewController {
 		view.endEditing(true)
 		loggingIn = true
 		updateSubmitButton()
-		textFields.forEach { $0.alpha = 0.2 }
+		textFields.forEach {
+			$0.alpha = 0.2
+			$0.isUserInteractionEnabled = false
+		}
 		buttonStackView.addArrangedSubview(activityIndicator)
 //		UIView.transition(with: loginLabel, duration: 0.5, options: [.transitionFlipFromRight], animations: {
 //			self.loginLabel.text = "Logging in"
@@ -115,8 +139,12 @@ class LoginViewController: UIViewController {
 	func endLogin() {
 		loggingIn = false
 		updateSubmitButton()
-		textFields.forEach { $0.alpha = 1 }
+		textFields.forEach {
+			$0.alpha = 1
+			$0.isUserInteractionEnabled = true
+		}
 		buttonStackView.removeArrangedSubview(activityIndicator)
+		activityIndicator.removeFromSuperview()
 //		UIView.transition(with: loginLabel, duration: 0.5, options: [.transitionFlipFromLeft], animations: {
 //			self.loginLabel.text = "Log in"
 //		})
