@@ -13,6 +13,9 @@
 		5658065D1DFD289E0003C27A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5658065C1DFD289E0003C27A /* Assets.xcassets */; };
 		565806601DFD289E0003C27A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5658065E1DFD289E0003C27A /* LaunchScreen.storyboard */; };
 		565806681DFD2B360003C27A /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 565806671DFD2B360003C27A /* .gitignore */; };
+		5658CBE31E00151E00EBA146 /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5658CBE21E00151E00EBA146 /* Profile.swift */; };
+		566B48BB1E0017B400401F2E /* Identifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 566B48BA1E0017B400401F2E /* Identifier.swift */; };
+		5694E6421E000D5F000BF3AD /* Update.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5694E6411E000D5F000BF3AD /* Update.swift */; };
 		569BFF151DFD762100B0C9B4 /* InfoPortalHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 569BFF141DFD762100B0C9B4 /* InfoPortalHelper.swift */; };
 		8C8A0F35A460FE50B934D5E7 /* Pods_InfoPortal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A89B61501BF64BC1A9EE343 /* Pods_InfoPortal.framework */; };
 /* End PBXBuildFile section */
@@ -26,6 +29,10 @@
 		5658065F1DFD289E0003C27A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		565806611DFD289E0003C27A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		565806671DFD2B360003C27A /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		5658CBE21E00151E00EBA146 /* Profile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
+		566265C51E0009C9006AA661 /* InfoPortal.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = InfoPortal.entitlements; sourceTree = "<group>"; };
+		566B48BA1E0017B400401F2E /* Identifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Identifier.swift; sourceTree = "<group>"; };
+		5694E6411E000D5F000BF3AD /* Update.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Update.swift; sourceTree = "<group>"; };
 		569BFF141DFD762100B0C9B4 /* InfoPortalHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfoPortalHelper.swift; sourceTree = "<group>"; };
 		9A89B61501BF64BC1A9EE343 /* Pods_InfoPortal.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_InfoPortal.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E7E4150DDC7AF9D252A1B712 /* Pods-InfoPortal.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-InfoPortal.debug.xcconfig"; path = "Pods/Target Support Files/Pods-InfoPortal/Pods-InfoPortal.debug.xcconfig"; sourceTree = "<group>"; };
@@ -65,6 +72,7 @@
 		565806541DFD289E0003C27A /* InfoPortal */ = {
 			isa = PBXGroup;
 			children = (
+				566265C51E0009C9006AA661 /* InfoPortal.entitlements */,
 				56AF1C101DFD2FBD0087C68E /* Model */,
 				56AF1C0E1DFD2FA30087C68E /* View and Layout */,
 				56AF1C0F1DFD2FA90087C68E /* Controller */,
@@ -105,6 +113,9 @@
 			isa = PBXGroup;
 			children = (
 				569BFF141DFD762100B0C9B4 /* InfoPortalHelper.swift */,
+				5694E6411E000D5F000BF3AD /* Update.swift */,
+				5658CBE21E00151E00EBA146 /* Profile.swift */,
+				566B48BA1E0017B400401F2E /* Identifier.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -163,6 +174,11 @@
 						CreatedOnToolsVersion = 8.1;
 						DevelopmentTeam = 4AXYTEF44D;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.Keychain = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -252,7 +268,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				569BFF151DFD762100B0C9B4 /* InfoPortalHelper.swift in Sources */,
+				5658CBE31E00151E00EBA146 /* Profile.swift in Sources */,
 				565806581DFD289E0003C27A /* LoginViewController.swift in Sources */,
+				5694E6421E000D5F000BF3AD /* Update.swift in Sources */,
+				566B48BB1E0017B400401F2E /* Identifier.swift in Sources */,
 				565806561DFD289E0003C27A /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -380,6 +399,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = InfoPortal/InfoPortal.entitlements;
 				DEVELOPMENT_TEAM = 4AXYTEF44D;
 				INFOPLIST_FILE = InfoPortal/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
@@ -396,6 +416,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = InfoPortal/InfoPortal.entitlements;
 				DEVELOPMENT_TEAM = 4AXYTEF44D;
 				INFOPLIST_FILE = InfoPortal/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.1;

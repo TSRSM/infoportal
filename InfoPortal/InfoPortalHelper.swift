@@ -12,6 +12,7 @@ import KeychainAccess
 
 enum InfoPortalError: LocalizedError {
 	case invalidSession
+	case invalidJSON
 	case endpointError(String)
 }
 
@@ -20,41 +21,34 @@ extension InfoPortalError {
 		switch self {
 		case .invalidSession:
 			return "Invalid session"
+		case .invalidJSON:
+			return "Invalid JSON"
 		case .endpointError(let message):
 			return message
 		}
 	}
 }
 
-enum InfoPortalEndpoint: String {
-	case login = "login"
-	case logout = "logout"
-	case updates = "updates"
-	case post = "post"
-	case profile = "prof"
-	case identifiers = "identifiers"
-}
+//enum InfoPortalResponse<T> {
+//	case error(Error)
+//	case success(T)
+//}
 
-typealias ErrorHandler = (Error) -> ()
-typealias SuccessHandler = (JSON) -> ()
+typealias Handler<T> = ((T) -> ())?
 
 class InfoPortalHelper {
 	
 	static let shared = InfoPortalHelper()
 	private init() {}
 	
-	let keychain = Keychain(service: "org.tsrs.infoportal.session").synchronizable(true)
+	let keychain = Keychain(service: "org.tsrs.InfoPortal.session").synchronizable(true)
 	
 	var session: String? {
-		get {
-			return keychain["user"]
-		}
-		set {
-			keychain["user"] = newValue
-		}
+		get { return keychain["user"] }
+		set { keychain["user"] = newValue }
 	}
 	
-	func request(endpoint: InfoPortalEndpoint, parameters: Parameters = [:], requiresAuth: Bool = true, method: HTTPMethod = .post, errorMessage: String, error: ErrorHandler?, success: SuccessHandler?) {
+	func request(endpoint: String, parameters: Parameters = [:], requiresAuth: Bool = true, method: HTTPMethod = .post, errorMessage: String, error: Handler<Error>, success: ((JSON) -> ())?) {
 		var parameters = parameters
 		if requiresAuth {
 			guard let session = session else {
@@ -63,7 +57,7 @@ class InfoPortalHelper {
 			}
 			parameters["session_id"] = session
 		}
-		Alamofire.request("http://infoportal.tsrs.org/api/\(endpoint.rawValue)", method: method, parameters: parameters).validate().responseJSON { response in
+		Alamofire.request("http://infoportal.tsrs.org/api/\(endpoint)", method: method, parameters: parameters).validate().responseJSON { response in
 			switch response.result {
 			case .failure(let err):
 				error?(err)
@@ -82,35 +76,82 @@ class InfoPortalHelper {
 	
 	// MARK: - Endpoints
 	
-	func login(username: String, password: String, error: ErrorHandler?, success: SuccessHandler?) {
+	func login(username: String, password: String, error: Handler<Error>, success: Handler<String>) {
 		let parameters = ["username": username, "password": password]
-		request(endpoint: .login, parameters: parameters, requiresAuth: false, errorMessage: "Failed to login", error: error) { json in
-			self.session = json["session_id"].string
-			success?(json)
+		request(endpoint: "login", parameters: parameters, requiresAuth: false, errorMessage: "Failed to login", error: error) { json in
+			guard let session = json["session_id"].string else {
+				error?(InfoPortalError.invalidSession)
+				return
+			}
+			self.session = session
+			success?(session)
 		}
 	}
 	
-	func logout(error: ErrorHandler?, success: SuccessHandler?) {
-		request(endpoint: .logout, errorMessage: "Failed to logout", error: error, success: success)
-		self.session = nil
+	func logout(error: Handler<Error>, success: Handler<Void>) {
+		request(endpoint: "logout", errorMessage: "Failed to logout", error: error) { _ in
+			self.session = nil
+			success?()
+		}
 	}
 	
-	func updates(filter: [String], error: ErrorHandler?, success: SuccessHandler?) {
-		request(endpoint: .updates, parameters: ["filter": filter], errorMessage: "Failed to update", error: error, success: success)
+	func updates(filter: [String], error: Handler<Error>, success: Handler<[Update]>) {
+		request(endpoint: "updates", parameters: ["filter": filter], errorMessage: "Failed to fetch updates", error: error) { json in
+			guard let array = json.array else {
+				error?(InfoPortalError.invalidJSON)
+				return
+			}
+			let updates: [Update] = array.flatMap { update in
+				guard let rawPostID = update["id"].string,
+					let postID = Int(rawPostID),
+					let rawAuthorID = update["author_id"].string,
+					let authorID = Int(rawAuthorID),
+					let target = update["target"].string,
+					let title = update["title"].string,
+					let content = update["content"].string,
+					let targetName = update["target_name"].string
+					else { return nil }
+				return Update(postID: postID, authorID: authorID, target: target, title: title, content: content, targetName: targetName)
+			}
+			success?(updates)
+		}
 	}
 	
-	func post(content: String, title: String, type: String, audience: [Int], error: ErrorHandler?, success: SuccessHandler?) {
-		// TODO: Test this out, and confirm whether audience does anything
-		let parameters: [String: Any] = ["content": content, "title": title, "type": type, "audience": audience]
-		request(endpoint: .post, parameters: parameters, errorMessage: "Failed to post", error: error, success: success)
+	func post(content: String, title: String, type: String, error: Handler<Error>, success: Handler<Void>) {
+		let parameters = ["content": content, "title": title, "type": type]
+		request(endpoint: "post", parameters: parameters, errorMessage: "Failed to post", error: error) { _ in success?() }
 	}
 	
-	func profile(error: ErrorHandler?, success: SuccessHandler?) {
-		request(endpoint: .profile, errorMessage: "Failed to fetch profile", error: error, success: success)
+	func profile(error: Handler<Error>, success: Handler<Profile>) {
+		request(endpoint: "prof", errorMessage: "Failed to fetch profile", error: error) { json in
+			guard let house = json["house"].string,
+				let name = json["name"].string,
+				let schoolClass = json["class"].string,
+				let email = json["email"].string
+				else {
+					error?(InfoPortalError.invalidJSON)
+					return
+			}
+			success?(Profile(name: name, schoolClass: schoolClass, house: house, email: email))
+		}
 	}
 	
-	func identifiers(error: ErrorHandler?, success: SuccessHandler?) {
-		request(endpoint: .identifiers, requiresAuth: false, method: .get, errorMessage: "Failed to fetch identifiers", error: error, success: success)
+	func identifiers(error: Handler<Error>, success: Handler<[Identifier]>) {
+		request(endpoint: "identifiers", requiresAuth: false, method: .get, errorMessage: "Failed to fetch identifiers", error: error) { json in
+			guard let array = json.array else {
+				error?(InfoPortalError.invalidJSON)
+				return
+			}
+			let identifiers: [Identifier] = array.flatMap { identifier in
+				guard let type = identifier["type"].string,
+					let title = identifier["title"].string,
+					let ref = identifier["ref"].string,
+					let description = identifier["description"].string
+					else { return nil }
+				return Identifier(type: type, title: title, ref: ref, description: description)
+			}
+			success?(identifiers)
+		}
 	}
 	
 }

@@ -25,7 +25,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                             </imageView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="6Yb-pc-AUH">
-                                <rect key="frame" x="16" y="247.5" width="343" height="171.5"/>
+                                <rect key="frame" x="16" y="253" width="343" height="161.5"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Log In" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2pC-NC-HsH">
                                         <rect key="frame" x="133.5" y="0.0" width="76" height="33.5"/>
@@ -35,27 +35,31 @@
                                     </label>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Username" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Nkx-uE-oaY">
                                         <rect key="frame" x="0.0" y="49.5" width="343" height="30"/>
+                                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.5" colorSpace="calibratedRGB"/>
                                         <nil key="textColor"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="next"/>
                                         <connections>
                                             <action selector="updateSubmitButton" destination="BYZ-38-t0r" eventType="editingChanged" id="YXU-DM-B72"/>
+                                            <outlet property="delegate" destination="BYZ-38-t0r" id="7B2-bX-KYC"/>
                                         </connections>
                                     </textField>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Password" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="xcS-hH-pcT">
                                         <rect key="frame" x="0.0" y="95.5" width="343" height="30"/>
+                                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.5" colorSpace="calibratedRGB"/>
                                         <nil key="textColor"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                        <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="go" secureTextEntry="YES"/>
+                                        <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="go" enablesReturnKeyAutomatically="YES" secureTextEntry="YES"/>
                                         <connections>
                                             <action selector="updateSubmitButton" destination="BYZ-38-t0r" eventType="editingChanged" id="kUa-MP-yBw"/>
+                                            <outlet property="delegate" destination="BYZ-38-t0r" id="uks-Hu-wIA"/>
                                         </connections>
                                     </textField>
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="jzW-5Y-Dh4">
-                                        <rect key="frame" x="147" y="141.5" width="49" height="30"/>
+                                        <rect key="frame" x="147" y="141.5" width="49" height="20"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sNU-as-atB">
-                                                <rect key="frame" x="0.0" y="0.0" width="49" height="30"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="49" height="20"/>
                                                 <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 <state key="normal" title="Submit"/>
                                                 <connections>
@@ -63,6 +67,9 @@
                                                 </connections>
                                             </button>
                                         </subviews>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="20" id="rwM-f8-R3Z"/>
+                                        </constraints>
                                     </stackView>
                                 </subviews>
                                 <constraints>
@@ -93,8 +100,6 @@
                         <outlet property="stackViewCenter" destination="wP0-lf-3Sa" id="39L-dY-cTC"/>
                         <outlet property="submitButton" destination="sNU-as-atB" id="NXv-bT-EQC"/>
                         <outlet property="usernameTextField" destination="Nkx-uE-oaY" id="dfO-WN-HFj"/>
-                        <outletCollection property="textFields" destination="Nkx-uE-oaY" collectionClass="NSMutableArray" id="eGw-qc-mXX"/>
-                        <outletCollection property="textFields" destination="xcS-hH-pcT" collectionClass="NSMutableArray" id="pgS-A4-x7v"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

@@ -18,80 +18,46 @@ class LoginViewController: UIViewController {
 	@IBOutlet weak var stackView: UIStackView!
 	@IBOutlet var stackViewCenter: NSLayoutConstraint!
 	@IBOutlet weak var buttonStackView: UIStackView!
-	@IBOutlet var textFields: [UITextField]!
 	
-	let helper = InfoPortalHelper.shared
+	let kSubmitDisabledAlpha: CGFloat = 0.75
+	let kTextFieldDisabledAlpha: CGFloat = 0.2
+	let kLoginLabelDisabledAlpha: CGFloat = 0.2
+	
 	let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .white)
-	
 	var loggingIn = false
 	
 	var canSubmit: Bool {
-		guard let username = usernameTextField.text, let password = passwordTextField.text else {return false}
-		return !loggingIn && !username.isEmpty && !password.isEmpty
+		return !loggingIn && usernameTextField.text?.isEmpty == false && passwordTextField.text?.isEmpty == false
 	}
 	
 	@IBAction func updateSubmitButton() {
 		submitButton.isEnabled = canSubmit
-		submitButton.alpha = canSubmit ? 1 : 0.75
+		submitButton.alpha = canSubmit ? 1 : kSubmitDisabledAlpha
 	}
 	
 	@IBAction func submitTapped() {
 		guard canSubmit else { return }
-		beginLogin()
-		
-		let error: ErrorHandler = { error in
-			self.endLogin()
+		animateLogin(begin: true)
+		InfoPortalHelper.shared.login(username: usernameTextField.text!, password: passwordTextField.text!, error: { error in
+			self.animateLogin(begin: false)
 			self.present(error: error)
-		}
-		
-		let success: SuccessHandler = { json in
-			self.endLogin()
-			self.present(title: "Success!", message: json.description)
-		}
-		
-		helper.login(username: usernameTextField.text!, password: passwordTextField.text!, error: error, success: success)
-//		helper.logout(error: error, success: success)
-//		helper.updates(filter: ["0000"], error: error, success: success)
-//		helper.post(content: "Hello world!", title: "Hi", type: "0000", audience: [9], error: error, success: success)
-//		helper.profile(error: error, success: success)
-//		helper.identifiers(error: error, success: success)
+		}, success: { session in
+			self.animateLogin(begin: false)
+			self.present(title: "Success!", message: session)
+		})
 	}
 	
 	// MARK: - View controller lifecycle
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		stackView.arrangedSubviews.forEach { $0.alpha = 0 }
-		submitButton.isEnabled = false
-		textFields.forEach {
-			$0.delegate = self
-			$0.backgroundColor = UIColor(white: 1, alpha: 0.75)
-		}
+		updateSubmitButton()
 		activityIndicator.startAnimating()
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: .UIKeyboardWillShow, object: nil)
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: .UIKeyboardWillHide, object: nil)
-		
-		if let session = helper.session {
-			print("session: \(session)")
-		}
 	}
 	
-	override func viewDidAppear(_ animated: Bool) {
-		super.viewDidAppear(animated)
-		updateSubmitButton()
-		for (i, element) in stackView.arrangedSubviews.enumerated() {
-			element.isUserInteractionEnabled = false
-			UIView.animate(withDuration: 1, delay: Double(i) * 0.1, animations: {
-				element.alpha = 1
-			}, completion: { _ in
-				element.isUserInteractionEnabled = true
-			})
-		}
-	}
-	
-	override var preferredStatusBarStyle: UIStatusBarStyle {
-		return .lightContent
-	}
+	override var preferredStatusBarStyle: UIStatusBarStyle { return .lightContent }
 	
 	// MARK: - Event listeners
 	
@@ -101,16 +67,16 @@ class LoginViewController: UIViewController {
 	}
 	
 	func keyboardWillShow(notification: Notification) {
-		animateViews(up: true, with: notification)
+		animateStackView(up: true, with: notification)
 	}
 	
 	func keyboardWillHide(notification: Notification) {
-		animateViews(up: false, with: notification)
+		animateStackView(up: false, with: notification)
 	}
 	
 	// MARK: - Helper functions
 	
-	func animateViews(up: Bool, with notification: Notification) {
+	func animateStackView(up: Bool, with notification: Notification) {
 		guard let beginFrame = notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue,
 			let endFrame = notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue,
 			let duration = notification.userInfo?[UIKeyboardAnimationDurationUserInfoKey] as? NSNumber,
@@ -122,32 +88,21 @@ class LoginViewController: UIViewController {
 		}
 	}
 	
-	func beginLogin() {
+	func animateLogin(begin: Bool) {
 		view.endEditing(true)
-		loggingIn = true
+		loggingIn = begin
 		updateSubmitButton()
-		textFields.forEach {
-			$0.alpha = 0.2
-			$0.isUserInteractionEnabled = false
+		[usernameTextField, passwordTextField].forEach {
+			$0?.alpha = begin ? kTextFieldDisabledAlpha : 1
+			$0?.isUserInteractionEnabled = !begin
 		}
-		buttonStackView.addArrangedSubview(activityIndicator)
-//		UIView.transition(with: loginLabel, duration: 0.5, options: [.transitionFlipFromRight], animations: {
-//			self.loginLabel.text = "Logging in"
-//		})
-	}
-	
-	func endLogin() {
-		loggingIn = false
-		updateSubmitButton()
-		textFields.forEach {
-			$0.alpha = 1
-			$0.isUserInteractionEnabled = true
+		loginLabel.alpha = begin ? kLoginLabelDisabledAlpha : 1
+		if begin {
+			buttonStackView.addArrangedSubview(activityIndicator)
+		} else {
+			buttonStackView.removeArrangedSubview(activityIndicator)
+			activityIndicator.removeFromSuperview()
 		}
-		buttonStackView.removeArrangedSubview(activityIndicator)
-		activityIndicator.removeFromSuperview()
-//		UIView.transition(with: loginLabel, duration: 0.5, options: [.transitionFlipFromLeft], animations: {
-//			self.loginLabel.text = "Log in"
-//		})
 	}
 	
 }

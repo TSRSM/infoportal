@@ -1,0 +1,154 @@
+ENDPOINT: http://infoportal.tsrs.org/api/
+
+Number reference:
+
+0000 - School wide announcement
+
+1000 - All sports and interschool and intra events
+1100 - Sports
+1200 - Interschool events
+1300 - Intraschool events
+1400 - Social Projects
+1500 - Environmental Initiatives 
+
+2000 - All houses
+2001 - Sagar House
+2002 - Himgiri House
+2003 - Vasundhara House
+2004 - Srishti House
+
+3000 - All classes
+3006 - Class 6		
+3007 - Class 7		
+3008 - Class 8		
+3009 - Class 9 		
+3010 - Class 10 	
+3011 - Class 11 	
+3012 - Class 12 	
+3013 - Class 11 IB 	
+3014 - Class 12 IB	
+
+4000 - All societies
+4001 - Computer Society
+4002 - Dance Society
+4003 - Debate Society
+4004 - Economics Society
+4005 - Heritage Society
+4006 - MUN Society
+4007 - Science Society
+4008 - Music Society
+
+9999 - Everything
+
+----------------------------------------------------------------------------
+
+Endpoint
+
+/login
+
+POST Parameters:
+
+username - The username
+password - The password [plaintext]
+
+Returns:
+
+JSON:
+
+{
+	"session" : "session_id"	// Attach this to all future requests. Stuff requiring auth won't work without it
+	"error" : "Error message"	// only present if there's an error
+}
+
+----------------------------------------------------------------------------
+
+/logout
+
+POST Parameters:
+
+session_id - The session to close
+
+Returns:
+
+JSON:
+
+{
+	"result" : "success/error"
+}
+
+----------------------------------------------------------------------------
+
+/updates
+
+POST Parameters:
+
+filter - Number denoting what updates you want (see number reference)
+session_id - The session ID
+
+Returns:
+
+JSON Array:
+
+{
+	[
+		{
+			"title" : "Title",
+			"content" : "the content",
+			"type" : "Society, sports, council, house, whatever",
+			"author" : "Who posted this"
+		}
+	]
+}
+
+Will return an error if trying to get updates you can't see
+
+----------------------------------------------------------------------------
+
+/post
+
+POST Parameters:
+
+session_id - The session ID
+content - what to post
+title - title of the post
+type - type of update (see number reference)
+audience - which all classes it's for (6, 7, 8 etc.)
+
+Returns:
+
+JSON:
+
+{
+	"status" : "error"/"success"
+}
+
+----------------------------------------------------------------------------
+
+/profile
+
+POST Parameters:
+
+session_id - The session ID
+
+Returns:
+
+JSON:
+
+{
+	"name" : "Daksh Idnani",
+	"class" : "12",
+	"section" : "S",
+	"admission_number" : 9999,
+	"house" : "Srishti",
+	"level" : "Student/Teacher/Principal/Accord/Whatever"
+}
+
+----------------------------------------------------------------------------
+
+/identifiers
+
+GET Request
+
+Returns:
+
+A JSON response with all the numbers and their description from Number references
