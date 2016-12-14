@@ -38,7 +38,7 @@ class LoginViewController: UIViewController {
 	@IBAction func submitTapped() {
 		guard canSubmit else { return }
 		animateLogin(begin: true)
-		InfoPortalHelper.shared.login(username: usernameTextField.text!, password: passwordTextField.text!, error: { error in
+		Helper.login(username: usernameTextField.text!, password: passwordTextField.text!, error: { error in
 			self.animateLogin(begin: false)
 			self.present(error: error)
 		}, success: { session in
