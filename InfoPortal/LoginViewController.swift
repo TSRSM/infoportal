@@ -38,23 +38,36 @@ class LoginViewController: UIViewController {
 	@IBAction func submitTapped() {
 		guard canSubmit else { return }
 		animateLogin(begin: true)
-		Helper.login(username: usernameTextField.text!, password: passwordTextField.text!, error: { error in
+		API.login(username: usernameTextField.text!, password: passwordTextField.text!, error: { error in
 			self.animateLogin(begin: false)
 			self.present(error: error)
-		}, success: { session in
+		}, success: {
 			self.animateLogin(begin: false)
-			self.present(title: "Success!", message: session)
+			self.presentUpdatesVC(animated: true)
 		})
 	}
 	
 	// MARK: - View controller lifecycle
 	
+	var shouldPresentUpdatesVC = API.isLoggedIn
+	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		updateSubmitButton()
 		activityIndicator.startAnimating()
-		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: .UIKeyboardWillShow, object: nil)
-		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: .UIKeyboardWillHide, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: .UIKeyboardWillShow, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: .UIKeyboardWillHide, object: nil)
+		if shouldPresentUpdatesVC {
+			stackView.alpha = 0
+		}
+	}
+	
+	override func viewDidAppear(_ animated: Bool) {
+		super.viewDidAppear(animated)
+		if shouldPresentUpdatesVC {
+			shouldPresentUpdatesVC = false
+			presentUpdatesVC(animated: false)
+		}
 	}
 	
 	override var preferredStatusBarStyle: UIStatusBarStyle { return .lightContent }
@@ -75,6 +88,13 @@ class LoginViewController: UIViewController {
 	}
 	
 	// MARK: - Helper functions
+	
+	func presentUpdatesVC(animated: Bool) {
+		if let navVC = storyboard?.instantiateViewController(withIdentifier: "NavigationController") {
+			navVC.transitioningDelegate = self
+			present(navVC, animated: animated)
+		}
+	}
 	
 	func animateStackView(up: Bool, with notification: Notification) {
 		guard let beginFrame = notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue,
@@ -103,6 +123,18 @@ class LoginViewController: UIViewController {
 			buttonStackView.removeArrangedSubview(activityIndicator)
 			activityIndicator.removeFromSuperview()
 		}
+	}
+	
+}
+
+extension LoginViewController: UIViewControllerTransitioningDelegate {
+	
+	func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+		return LoginAnimator(isAppearing: true)
+	}
+	
+	func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+		return LoginAnimator(isAppearing: false)
 	}
 	
 }

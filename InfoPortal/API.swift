@@ -1,5 +1,5 @@
 //
-//  Helper.swift
+//  API.swift
 //  InfoPortal
 //
 //  Created by Kabir Oberai on 11/12/16.
@@ -29,7 +29,7 @@ enum InfoPortalError: LocalizedError {
 	
 }
 
-struct Helper {
+struct API {
 	
 	private init() {}
 	private static let keychain = Keychain(service: "org.tsrs.InfoPortal.session").synchronizable(true)
@@ -71,7 +71,7 @@ struct Helper {
 	
 	// MARK: - Endpoints
 	
-	static func login(username: String, password: String, error: Handler<Error>, success: Handler<String>) {
+	static func login(username: String, password: String, error: Handler<Error>, success: Handler<Void>) {
 		let parameters = ["username": username, "password": password]
 		request(endpoint: "login", parameters: parameters, requiresAuth: false, error: error) { json in
 			guard let session = json["session_id"].string else {
@@ -79,15 +79,13 @@ struct Helper {
 				return
 			}
 			self.session = session
-			success?(session)
+			success?()
 		}
 	}
 	
 	static func logout(error: Handler<Error>, success: Handler<Void>) {
-		request(endpoint: "logout", error: error) { _ in
-			self.session = nil
-			success?()
-		}
+		request(endpoint: "logout", error: error, success: { _ in success?() })
+		self.session = nil
 	}
 	
 	static func updates(filter: [String], error: Handler<Error>, success: Handler<[Update]>) {
