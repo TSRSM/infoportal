@@ -124,27 +124,3 @@ struct API {
 	}
 	
 }
-
-extension UIViewController {
-	
-	func present(error: Error,
-	             title: String = "Error",
-	             animated: Bool = true,
-	             additionalActions: [UIAlertAction]? = nil,
-	             completion: (() -> Void)? = nil) {
-		present(title: title, message: error.localizedDescription)
-	}
-	
-	func present(title: String,
-	             message: String,
-	             animated: Bool = true,
-	             additionalActions: [UIAlertAction]? = nil,
-	             completion: (() -> Void)? = nil) {
-		let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-		let okAction = UIAlertAction(title: "OK", style: .cancel)
-		alertController.addAction(okAction)
-		additionalActions?.forEach {alertController.addAction($0)}
-		present(alertController, animated: animated, completion: completion)
-	}
-	
-}

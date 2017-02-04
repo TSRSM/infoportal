@@ -20,6 +20,7 @@
 		5686FA2B1E3E34400010C8A3 /* stylesheet.css in Resources */ = {isa = PBXBuildFile; fileRef = 5686FA2A1E3E34400010C8A3 /* stylesheet.css */; };
 		5694E6421E000D5F000BF3AD /* Update.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5694E6411E000D5F000BF3AD /* Update.swift */; };
 		569BFF151DFD762100B0C9B4 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 569BFF141DFD762100B0C9B4 /* API.swift */; };
+		56E9010C1E4576AE005B93F4 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56E9010B1E4576AE005B93F4 /* Helpers.swift */; };
 		56F118A01E3D108300F4B82F /* UpdatesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56F1189F1E3D108300F4B82F /* UpdatesViewController.swift */; };
 		56F118A21E3D162C00F4B82F /* LoginAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56F118A11E3D162C00F4B82F /* LoginAnimator.swift */; };
 		8C8A0F35A460FE50B934D5E7 /* Pods_InfoPortal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A89B61501BF64BC1A9EE343 /* Pods_InfoPortal.framework */; };
@@ -42,6 +43,7 @@
 		5686FA2A1E3E34400010C8A3 /* stylesheet.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = stylesheet.css; sourceTree = "<group>"; };
 		5694E6411E000D5F000BF3AD /* Update.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Update.swift; sourceTree = "<group>"; };
 		569BFF141DFD762100B0C9B4 /* API.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
+		56E9010B1E4576AE005B93F4 /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 		56F1189F1E3D108300F4B82F /* UpdatesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdatesViewController.swift; sourceTree = "<group>"; };
 		56F118A11E3D162C00F4B82F /* LoginAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginAnimator.swift; sourceTree = "<group>"; };
 		9A89B61501BF64BC1A9EE343 /* Pods_InfoPortal.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_InfoPortal.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -134,6 +136,7 @@
 		56AF1C101DFD2FBD0087C68E /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				56E9010B1E4576AE005B93F4 /* Helpers.swift */,
 				569BFF141DFD762100B0C9B4 /* API.swift */,
 				5694E6411E000D5F000BF3AD /* Update.swift */,
 				5658CBE21E00151E00EBA146 /* Profile.swift */,
@@ -291,6 +294,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				56E9010C1E4576AE005B93F4 /* Helpers.swift in Sources */,
 				5686FA261E3E28EC0010C8A3 /* UpdatesTableView.swift in Sources */,
 				569BFF151DFD762100B0C9B4 /* API.swift in Sources */,
 				5635359C1E3DAC6B006754CD /* UpdateCell.swift in Sources */,

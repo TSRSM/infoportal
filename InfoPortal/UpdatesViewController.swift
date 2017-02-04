@@ -25,17 +25,29 @@ class UpdatesViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 		fetchUpdates()
+		IdentifierManager.shared.delegate = self
+		
 		tableView.rowHeight = UITableViewAutomaticDimension
 		tableView.estimatedRowHeight = 88
+		tableView.contentInset.top += 16
 	}
 	
 	func fetchUpdates() {
-		API.updates(filter: ["0000"], error: {
+		let refs = IdentifierManager.shared.identifiers.map { $0.ref }
+		API.updates(filter: refs, error: {
 			self.present(error: $0)
 		}, success: {
 			self.updates = $0
 			self.tableView.reloadData()
 		})
+	}
+	
+}
+
+extension UpdatesViewController: IdentifierManagerDelegate {
+	
+	func identifiersDidChange() {
+		fetchUpdates()
 	}
 	
 }
@@ -51,6 +63,10 @@ extension UpdatesViewController: UITableViewDataSource {
 		let cell = tableView.dequeueReusableCell(withIdentifier: "UpdateCell", for: indexPath) as! UpdateCell
 		cell.titleLabel.text = update.title
 		cell.targetLabel.text = update.targetName
+		cell.authorLabel.text = update.author
+		let content = update.content.htmlAttributed?.mutableCopy() as? NSMutableAttributedString
+		content?.setBaseFont(.systemFont(ofSize: UIFont.systemFontSize))
+		cell.contentTextView.attributedText = content
 		return cell
 	}
 	

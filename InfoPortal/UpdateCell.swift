@@ -14,16 +14,13 @@ class UpdateCell: UITableViewCell {
 	@IBOutlet weak var body: UIView!
 	@IBOutlet weak var titleLabel: UILabel!
 	@IBOutlet weak var targetLabel: UILabel!
+	@IBOutlet weak var authorLabel: UILabel!
 	@IBOutlet weak var topBar: UIView!
+	@IBOutlet weak var contentTextView: UITextView!
 	
     override func awakeFromNib() {
         super.awakeFromNib()
-		body.layer.cornerRadius = 10
+		topBar.layer.shadowOpacity = 1
     }
-	
-	override func setSelected(_ selected: Bool, animated: Bool) {
-		// Animated always seems to be false
-		// TODO: Expand cell to reveal info (add relevant WKWebView programatically)
-	}
 
 }

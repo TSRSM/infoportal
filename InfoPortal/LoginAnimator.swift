@@ -34,19 +34,28 @@ class LoginAnimator: NSObject, UIViewControllerAnimatedTransitioning {
 		
 		navVC.isNavigationBarHidden = isAppearing
 		let updatesHeight = updatesVC.view.frame.height
+		let updatesTableView = updatesVC.tableView as! UpdatesTableView
 		if isAppearing {
-			updatesVC.tableView.frame.origin.y = updatesHeight
+			updatesTableView.frame.origin.y = updatesHeight
+			updatesTableView.bgGradient.opacity = 0
 		} else {
 			loginVC.stackView.alpha = 0
 		}
 		
-		UIView.animate(withDuration: duration / 4) {
-			loginVC.stackView.alpha = self.isAppearing ? 0 : 1
+		let opacityAnimation = CABasicAnimation(keyPath: #keyPath(CAGradientLayer.opacity))
+		opacityAnimation.fromValue = isAppearing ? 0 : 1
+		opacityAnimation.toValue = isAppearing ? 1 : 0
+		opacityAnimation.duration = duration
+		updatesTableView.bgGradient.add(opacityAnimation, forKey: "opacityAnimation")
+		updatesTableView.bgGradient.opacity = isAppearing ? 1 : 0
+		
+		if !isAppearing {
+			loginVC.stackView.alpha = 1
 		}
 		
 		UIView.animate(withDuration: duration, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 1, animations: {
 			if self.isAppearing {
-				updatesVC.tableView.frame.origin.y = 0
+				updatesTableView.frame.origin.y = 0
 				navVC.isNavigationBarHidden = !self.isAppearing
 			} else {
 				navVC.view.frame.origin.y = updatesHeight + 64

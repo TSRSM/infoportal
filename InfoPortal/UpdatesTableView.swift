@@ -11,12 +11,34 @@ import UIKit
 @IBDesignable
 class UpdatesTableView: UITableView {
 	
-	override func prepareForInterfaceBuilder() { // Only shows up in IB
-		let bundle = Bundle(for: type(of: self))
-		let image = UIImage(named: "gaussiantsrs", in: bundle, compatibleWith: nil)
-		let imageView = UIImageView(image: image)
-		imageView.contentMode = .scaleAspectFill
-		backgroundView = imageView
+	let bgGradient = CAGradientLayer()
+	
+	override func awakeFromNib() {
+		setupBackground()
+	}
+	
+	override func layoutSubviews() {
+		super.layoutSubviews()
+		positionBackground()
+	}
+	
+	override func prepareForInterfaceBuilder() {
+		super.layoutSubviews()
+		setupBackground()
+		positionBackground()
+	}
+	
+	func setupBackground() {
+		bgGradient.colors = [#colorLiteral(red: 0.73485291, green: 0.1408088207, blue: 0.1749014854, alpha: 1).cgColor, UIColor.black.cgColor]
+		bgGradient.startPoint = CGPoint(x: 0, y: 0.5)
+		bgGradient.endPoint = CGPoint(x: 1, y: 0.5)
+		superview?.layer.insertSublayer(bgGradient, at: 0)
+	}
+	
+	func positionBackground() {
+		bgGradient.frame = frame
+		bgGradient.frame.origin.y -= 64
+		bgGradient.frame.size.height += 64
 	}
 	
 }
