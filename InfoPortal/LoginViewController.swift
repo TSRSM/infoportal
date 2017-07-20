@@ -79,30 +79,33 @@ class LoginViewController: UIViewController {
 		view.endEditing(true)
 	}
 	
-	func keyboardWillShow(notification: Notification) {
+	@objc func keyboardWillShow(notification: Notification) {
 		animateStackView(up: true, with: notification)
 	}
 	
-	func keyboardWillHide(notification: Notification) {
+	@objc func keyboardWillHide(notification: Notification) {
 		animateStackView(up: false, with: notification)
 	}
 	
 	// MARK: - Helper functions
 	
 	func presentUpdatesVC(animated: Bool) {
-		if let navVC = storyboard?.instantiateViewController(withIdentifier: "NavigationController") {
-			navVC.transitioningDelegate = self
-			present(navVC, animated: animated)
+		if let splitVC = storyboard?.instantiateViewController(withIdentifier: "SplitViewController") {
+			splitVC.transitioningDelegate = self
+			present(splitVC, animated: animated) {
+				self.stackView.alpha = 1
+			}
 		}
 	}
 	
 	func animateStackView(up: Bool, with notification: Notification) {
 		guard let beginFrame = notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue,
 			let endFrame = notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue,
-			let duration = notification.userInfo?[UIKeyboardAnimationDurationUserInfoKey] as? NSNumber,
+			let duration = notification.userInfo?[UIKeyboardAnimationDurationUserInfoKey] as? TimeInterval,
 			beginFrame != endFrame
 			else { return }
-		UIView.animate(withDuration: TimeInterval(duration)) {
+		
+		UIView.animate(withDuration: duration) {
 			self.stackViewCenter.isActive = !up // If inactive, the lower priority -100 constraint activates
 			self.view.layoutIfNeeded()
 		}

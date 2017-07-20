@@ -8,11 +8,25 @@
 
 import SwiftyJSON
 
-struct Update {
+class Update { // Class because of lazy properties
 	
 	let postID: Int
 	let title: String
 	let content: String
+	
+	static var htmlFormatting: String? = {
+		guard let path = Bundle.main.path(forResource: "stylesheet", ofType: "css"),
+			let stylesheet = try? String(contentsOfFile: path)
+			else { return nil }
+		return "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><style>\(stylesheet)</style>"
+	}()
+	
+	lazy var attributedContent: NSAttributedString? = {
+		guard let formatting = Update.htmlFormatting else { return nil }
+		let html = formatting + content
+		return html.htmlAttributed
+	}()
+	
 	let timestamp: Date?
 	
 	let authorID: String
@@ -40,9 +54,10 @@ struct Update {
 		self.author = author
 		self.target = target
 		self.title = title
-		self.content = content
 		self.targetName = targetName
-		self.color = color
+		self.color = color.isEmpty ? "#333333" : color
+		print(self.color)
+		self.content = content
 		
 		let formatter = DateFormatter()
 		formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"

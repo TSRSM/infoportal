@@ -17,6 +17,7 @@ class UpdateCell: UITableViewCell {
 	@IBOutlet weak var authorLabel: UILabel!
 	@IBOutlet weak var topBar: UIView!
 	@IBOutlet weak var contentTextView: UITextView!
+	@IBOutlet weak var colorBar: UIView!
 	
     override func awakeFromNib() {
         super.awakeFromNib()

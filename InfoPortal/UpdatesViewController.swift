@@ -30,6 +30,9 @@ class UpdatesViewController: UIViewController {
 		tableView.rowHeight = UITableViewAutomaticDimension
 		tableView.estimatedRowHeight = 88
 		tableView.contentInset.top += 16
+		
+		splitViewController?.delegate = self
+//		splitViewController?.preferredDisplayMode = .primaryHidden
 	}
 	
 	func fetchUpdates() {
@@ -52,6 +55,12 @@ extension UpdatesViewController: IdentifierManagerDelegate {
 	
 }
 
+extension UpdatesViewController: UISplitViewControllerDelegate {
+	
+	
+	
+}
+
 extension UpdatesViewController: UITableViewDataSource {
 	
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -64,9 +73,12 @@ extension UpdatesViewController: UITableViewDataSource {
 		cell.titleLabel.text = update.title
 		cell.targetLabel.text = update.targetName
 		cell.authorLabel.text = update.author
-		let content = update.content.htmlAttributed?.mutableCopy() as? NSMutableAttributedString
-		content?.setBaseFont(.systemFont(ofSize: UIFont.systemFontSize))
-		cell.contentTextView.attributedText = content
+		cell.colorBar.backgroundColor = UIColor(hexString: "\(update.color)FF") ?? UIColor(name: update.color)
+		if let attributedContent = update.attributedContent {
+			cell.contentTextView.attributedText = attributedContent
+		} else {
+			cell.contentTextView.text = update.content
+		}
 		return cell
 	}
 	

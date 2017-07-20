@@ -41,6 +41,7 @@ struct API {
 	static var isLoggedIn: Bool { return session != nil }
 	
 	typealias Handler<T> = ((T) -> ())?
+	typealias VoidHandler = (() -> ())?
 	
 	private static func request(endpoint: String, parameters: Parameters = [:], requiresAuth: Bool = true, method: HTTPMethod = .post, error: Handler<Error>, success: Handler<JSON>) {
 		var parameters = parameters
@@ -71,7 +72,7 @@ struct API {
 	
 	// MARK: - Endpoints
 	
-	static func login(username: String, password: String, error: Handler<Error>, success: Handler<Void>) {
+	static func login(username: String, password: String, error: Handler<Error>, success: VoidHandler) {
 		let parameters = ["username": username, "password": password]
 		request(endpoint: "login", parameters: parameters, requiresAuth: false, error: error) { json in
 			guard let session = json["session_id"].string else {
@@ -83,7 +84,7 @@ struct API {
 		}
 	}
 	
-	static func logout(error: Handler<Error>, success: Handler<Void>) {
+	static func logout(error: Handler<Error>, success: VoidHandler) {
 		request(endpoint: "logout", error: error, success: { _ in success?() })
 		self.session = nil
 	}
@@ -94,11 +95,11 @@ struct API {
 				error?(InfoPortalError.invalidJSON)
 				return
 			}
-			success?(array.flatMap { Update(json: $0) })
+			success?(array.flatMap(Update.init))
 		}
 	}
 	
-	static func post(title: String, content: String, ref: String, error: Handler<Error>, success: Handler<Void>) {
+	static func post(title: String, content: String, ref: String, error: Handler<Error>, success: VoidHandler) {
 		let parameters = ["content": content, "title": title, "target": ref]
 		request(endpoint: "post", parameters: parameters, error: error) { _ in success?() }
 	}
@@ -119,7 +120,7 @@ struct API {
 				error?(InfoPortalError.invalidJSON)
 				return
 			}
-			success?(array.flatMap { Identifier(json: $0) })
+			success?(array.flatMap(Identifier.init))
 		}
 	}
 	

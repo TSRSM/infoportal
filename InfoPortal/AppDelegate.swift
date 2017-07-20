@@ -15,16 +15,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
 		
-		let backgroundView = UIImageView(image: #imageLiteral(resourceName: "gaussiantsrs"))
-		backgroundView.contentMode = .scaleAspectFill
-		backgroundView.translatesAutoresizingMaskIntoConstraints = false
-		window?.addSubview(backgroundView)
-		NSLayoutConstraint.activate([
-			backgroundView.topAnchor.constraint(equalTo: window!.topAnchor),
-			backgroundView.bottomAnchor.constraint(equalTo: window!.bottomAnchor),
-			backgroundView.leftAnchor.constraint(equalTo: window!.leftAnchor),
-			backgroundView.rightAnchor.constraint(equalTo: window!.rightAnchor)
-		])
+//		let backgroundView = UIImageView(image: #imageLiteral(resourceName: "gaussiantsrs"))
+//		backgroundView.contentMode = .scaleAspectFill
+//		backgroundView.translatesAutoresizingMaskIntoConstraints = false
+//		window?.addSubview(backgroundView)
+//		NSLayoutConstraint.activate([
+//			backgroundView.topAnchor.constraint(equalTo: window!.topAnchor),
+//			backgroundView.bottomAnchor.constraint(equalTo: window!.bottomAnchor),
+//			backgroundView.leftAnchor.constraint(equalTo: window!.leftAnchor),
+//			backgroundView.rightAnchor.constraint(equalTo: window!.rightAnchor)
+//		])
 		
 		return true
 	}
